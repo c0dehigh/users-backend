@@ -4,12 +4,29 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
-  @Column()
+  @Column({
+    type: 'varchar',
+    length: 96,
+    nullable: false,
+  })
   firstName: string;
-  @Column()
+  @Column({
+    type: 'varchar',
+    length: 96,
+    nullable: true,
+  })
   lastName: string;
-  @Column()
+  @Column({
+    type: 'varchar',
+    length: 96,
+    nullable: false,
+    unique: true,
+  })
   email: string;
-  @Column()
+  @Column({
+    type: 'varchar',
+    length: 96,
+    nullable: false,
+  })
   password: string;
 }
