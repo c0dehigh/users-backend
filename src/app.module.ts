@@ -16,7 +16,8 @@ import { MetaOptinsModule } from './meta-optins/meta-optins.module';
     AuthModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
-      entities: [User],
+      // entities: [User],
+      autoLoadEntities: true,
       synchronize: true,
       port: 5432,
       username: 'postgres',
