@@ -1,4 +1,3 @@
-import { Delete } from '@nestjs/common';
 import {
   Column,
   CreateDateColumn,
@@ -22,7 +21,7 @@ export class Tag {
 
   @Column({
     type: 'varchar',
-    length: 512,
+    length: 256,
     nullable: false,
     unique: true,
   })
