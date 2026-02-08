@@ -7,7 +7,8 @@ import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/user.entity';
 import { TagsModule } from './tags/tags.module';
-import { MetaOptinsModule } from './meta-optins/meta-optins.module';
+import { MetaOptinsModule } from './meta-options/meta-optins.module';
+import { MetaOptionsService } from './meta-options/providers/meta-options.service';
 
 @Module({
   imports: [
@@ -29,6 +30,6 @@ import { MetaOptinsModule } from './meta-optins/meta-optins.module';
     MetaOptinsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, MetaOptionsService],
 })
 export class AppModule {}
