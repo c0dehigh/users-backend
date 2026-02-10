@@ -30,6 +30,6 @@ import { MetaOptionsService } from './meta-options/providers/meta-options.servic
     MetaOptinsModule,
   ],
   controllers: [AppController],
-  providers: [AppService, MetaOptionsService],
+  providers: [AppService],
 })
 export class AppModule {}

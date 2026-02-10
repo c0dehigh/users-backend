@@ -24,7 +24,7 @@ export class PostsController {
     description: 'Post created successfully',
   })
   public createPost(@Body() createPostDto: CreatePostDto) {
-    console.log(`create post dto : ${createPostDto}`);
+    return this.postsService.create(createPostDto);
   }
 
   @Get('{/:userId}')

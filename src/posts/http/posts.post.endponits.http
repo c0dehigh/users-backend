@@ -3,19 +3,15 @@ Content-Type : application/json
 {
  "title" : "whats new",
  "postType" : "post",
- "slug" : "new-with-nestjs",
+ "slug" : "new-with-nestjs-1",
  "status" : "draft",
  "content" : "test content",
  "schema" : "{\r\n \"@context\":\"https:\/\/schema.org\",\r\n \"@type\": \"Person\"\r\n}",
  "featuredImageUrl" :"http://localhost.com/img/image1.png",
- "publishOn" : "2024-03-16T07:46:32+0000",
- "tags":["nestjs", "typescript"],
- "metaOptions": [
- {
- "key":"testKey",
- "value": 20
- }
-
- ]
+ "publishOn" : "2024-03-16T07:46:32+0000"
+ // "tags":["nestjs", "typescript"],
+//  "metaOptions":{
+//  "metaValue":"{\"sidebarEnabled\":true , \"footerActive\":true}"
+//  }
 }
 
