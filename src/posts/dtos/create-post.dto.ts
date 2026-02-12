@@ -10,7 +10,6 @@ import {
   Matches,
   MaxLength,
   MinLength,
-  ValidateNested,
 } from 'class-validator';
 
 import { Type } from 'class-transformer';
@@ -110,5 +109,5 @@ export class CreatePostDto {
   })
   @IsOptional()
   @Type(() => CreatePostMetaOptionsDto)
-  metaOptions?: CreatePostMetaOptionsDto | null;
+  metaOptions?: CreatePostMetaOptionsDto | undefined;
 }
