@@ -15,7 +15,7 @@ export class PostsService {
     private readonly usersService: UsersService,
 
     /**
-     * inject post reposotory
+     * inject post repository
      */
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
@@ -35,44 +35,26 @@ export class PostsService {
   public async create(@Body() createPostdto: CreatePostDto) {
     // first create metaOptions
 
-    let metaOptions = createPostdto.metaOptions
-      ? this.metaOptionsRepository.create({
-          metaValue: createPostdto.metaOptions.metaValue,
-        })
-      : null;
-
-    if (metaOptions) {
-      await this.metaOptionsRepository.save(metaOptions);
-    }
-    // Second create post - destructure to exclude metaOptions
-    const { metaOptions: _, ...postData } = createPostdto;
-    const post = this.postRepository.create(postData);
-
-    // Add meta options to the post
-    if (metaOptions) {
-      post.metaOptions = metaOptions;
-    }
+    const post = this.postRepository.create(createPostdto);
 
     return await this.postRepository.save(post);
   }
 
-  findAll(userId: string) {
-    console.log(`post service userid : ${userId}`);
+  public async findAll(userId: string) {
     const user = this.usersService.findOneById(userId);
 
-    return [
-      {
-        user: user,
-        id: 1,
-        title: 'Post 1',
-        content: 'Content 1',
+    let posts = await this.postRepository.find({
+      relations: {
+        metaOptions: true,
       },
-      {
-        user: user,
-        id: 2,
-        title: 'Post 2',
-        content: 'Content 2',
-      },
-    ];
+    });
+
+    return posts;
+  }
+
+  public async delete(id: number) {
+    await this.postRepository.delete(id);
+
+    return { deleted: true, id };
   }
 }
