@@ -32,16 +32,22 @@ export class PostsService {
    * Creating new posts
    */
 
-  public async create(@Body() createPostdto: CreatePostDto) {
-    // first create metaOptions
+  public async create(@Body() createPostDto: CreatePostDto) {
+    // find author from a database on authorId
 
-    const post = this.postRepository.create(createPostdto);
+    let author = await this.usersService.findOneById(createPostDto.authorId);
 
-    return await this.postRepository.save(post);
+
+    // const post = this.postRepository.create({
+    //   ...createPostDto,
+    //   author: author,
+    // });
+
+ //   return await this.postRepository.save(post);
   }
 
   public async findAll(userId: string) {
-    const user = this.usersService.findOneById(userId);
+
 
     let posts = await this.postRepository.find({
       relations: {
