@@ -37,21 +37,21 @@ export class PostsService {
 
     let author = await this.usersService.findOneById(createPostDto.authorId);
 
+    if (author) {
+      const post = this.postRepository.create({
+        ...createPostDto,
+        author: author,
+      });
 
-    // const post = this.postRepository.create({
-    //   ...createPostDto,
-    //   author: author,
-    // });
-
- //   return await this.postRepository.save(post);
+      return await this.postRepository.save(post);
+    }
   }
 
   public async findAll(userId: string) {
-
-
     let posts = await this.postRepository.find({
       relations: {
         metaOptions: true,
+        author: true,
       },
     });
 
