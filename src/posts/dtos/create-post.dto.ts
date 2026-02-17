@@ -90,14 +90,13 @@ export class CreatePostDto {
   publishOn?: Date;
 
   @ApiPropertyOptional({
-    description: 'Tags for your blog post',
-    example: ['nestjs', 'typescript'],
+    description: 'Array of tags ids',
+    example: [1, 2],
   })
   @IsOptional()
   @IsArray()
-  @IsString({ each: true })
-  @MinLength(3, { each: true })
-  tags?: string[];
+  @IsInt({ each: true })
+  tags?: number[];
   @ApiPropertyOptional({
     type: 'object',
     properties: {
@@ -116,10 +115,8 @@ export class CreatePostDto {
     type: 'integer',
     required: true,
     example: 1,
-
   })
   @IsInt()
   @IsNotEmpty()
-
   authorId: number;
 }
