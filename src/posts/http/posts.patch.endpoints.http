@@ -1,6 +1,11 @@
 PATCH http://localhost:3000/posts
 Content-Type : application/json
 {
-    "id" : 1234,
-    "postType" : "434343"
-}
+ "id":8,  
+ "title" : "Whats new with Hamed",
+ "postType" : "post",
+ "slug" : "new-with-nestj-14",
+ "status" : "draft",
+ "content" : "test content 1",
+ "tags" : [2,1]
+} 

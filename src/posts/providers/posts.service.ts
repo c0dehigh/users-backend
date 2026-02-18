@@ -6,6 +6,7 @@ import { Post } from '../post.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MetaOption } from 'src/meta-options/meta-option.entity';
 import { TagsService } from '../../tags/providers/tags.service';
+import { PatchPostDto } from '../dtos/patch-post-dto';
 
 @Injectable()
 export class PostsService {
@@ -40,11 +41,11 @@ export class PostsService {
 
   public async create(@Body() createPostDto: CreatePostDto) {
     // find author from a database on authorId
-    let author = await this.usersService.findOneById(createPostDto.authorId);
+    const author = await this.usersService.findOneById(createPostDto.authorId);
 
     if (author && createPostDto.tags) {
       // find tags
-      let tags = await this.tagsService.findMultipleTags(createPostDto.tags);
+      const tags = await this.tagsService.findMultipleTags(createPostDto.tags);
 
       const post = this.postRepository.create({
         ...createPostDto,
@@ -56,10 +57,42 @@ export class PostsService {
     }
   }
 
+  public async update(patchPostDto: PatchPostDto) {
+    // Find the tags
+
+    if (!patchPostDto.tags) {
+      return;
+    }
+
+    const tags = await this.tagsService.findMultipleTags(patchPostDto.tags);
+    // Find the post
+
+    const post = await this.postRepository.findOneBy({
+      id: patchPostDto.id,
+    });
+    // Update the properties
+
+    if (!post) return;
+    post.title = patchPostDto.title ?? post.title;
+    post.content = patchPostDto.content ?? post.content;
+    post.status = patchPostDto.status ?? post.status;
+    post.postType = patchPostDto.postType ?? post.postType;
+    post.slug = patchPostDto.slug ?? post.slug;
+    post.featuredImageUrl =
+      patchPostDto.featuredImageUrl ?? post.featuredImageUrl;
+    post.publishOn = patchPostDto.publishOn ?? post.publishOn;
+
+    // assign the new tags
+    post.tags = tags;
+    // save the post and return the updated post
+    return await this.postRepository.save(post);
+  }
+
   public async findAll(userId: string) {
     return await this.postRepository.find({
       relations: {
         metaOptions: true,
+        tags: true,
         author: true,
       },
     });
@@ -67,7 +100,6 @@ export class PostsService {
 
   public async delete(id: number) {
     await this.postRepository.delete(id);
-
     return { deleted: true, id };
   }
 }
