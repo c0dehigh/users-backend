@@ -26,4 +26,9 @@ export class TagsService {
       },
     });
   }
+
+  public async delete(id: number) {
+    await this.tagsRepository.delete(id);
+    return { deleted: true, id };
+  }
 }
