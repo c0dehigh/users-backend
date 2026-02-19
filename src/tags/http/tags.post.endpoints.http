@@ -2,7 +2,7 @@ POST http://localhost:3000/tags
 Content-Type: application/json
 
 {
-  "name" : "typescript",
-  "slug" :  "typescript",
-  "description" : "all post about typescript"
+  "name" : "javascript",
+  "slug" :  "javascript",
+  "description" : "all post about javascript"
 }
