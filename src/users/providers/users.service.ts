@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { User } from '../user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from '../dtos/create-user.dto';
+import { ConfigService } from '@nestjs/config';
 
 /**
  * Class that handles the business logic for the users
@@ -17,6 +18,12 @@ export class UsersService {
      */
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+
+    /**
+     * Injecting Config Service
+     *
+     */
+    private readonly configService: ConfigService,
   ) {}
 
   public async createUser(createUserDto: CreateUserDto) {
@@ -41,6 +48,9 @@ export class UsersService {
     limit: number,
     page: number,
   ) {
+    const enviroment = this.configService.get<string>('S3_BUCKET');
+    console.log(enviroment);
+
     return [
       {
         firstName: 'John',
@@ -57,6 +67,6 @@ export class UsersService {
    * the method to find a user by id
    */
   public async findOneById(id: number) {
-    return await  this.usersRepository.findOneBy({id})
+    return await this.usersRepository.findOneBy({ id });
   }
 }
