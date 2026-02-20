@@ -11,6 +11,8 @@ import { MetaOptinsModule } from './meta-options/meta-optins.module';
 import { MetaOptionsService } from './meta-options/providers/meta-options.service';
 import { ConfigModule } from '@nestjs/config';
 
+const ENV = process.env.NODE_ENV;
+
 @Module({
   imports: [
     UsersModule,
@@ -18,6 +20,9 @@ import { ConfigModule } from '@nestjs/config';
     AuthModule,
     ConfigModule.forRoot({
       isGlobal: true,
+      //   envFilePath: ['.env.development'],
+
+      envFilePath: !ENV ? '.env' : `.env.${ENV}`,
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
