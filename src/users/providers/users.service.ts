@@ -1,11 +1,12 @@
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { GetUsersParamDto } from '../dtos/get-users-param.dto';
-import { AuthService } from 'src/auth/providers/auth.service';
 import { Repository } from 'typeorm';
 import { User } from '../user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from '../dtos/create-user.dto';
-import { ConfigService } from '@nestjs/config';
+import type { ConfigType } from '@nestjs/config';
+
+import profileConfig from '../config/profile.config';
 
 /**
  * Class that handles the business logic for the users
@@ -19,11 +20,8 @@ export class UsersService {
     @InjectRepository(User)
     private usersRepository: Repository<User>,
 
-    /**
-     * Injecting Config Service
-     *
-     */
-    private readonly configService: ConfigService,
+    @Inject(profileConfig.KEY)
+    private readonly profileConfiguration: ConfigType<typeof profileConfig>,
   ) {}
 
   public async createUser(createUserDto: CreateUserDto) {
@@ -48,8 +46,7 @@ export class UsersService {
     limit: number,
     page: number,
   ) {
-    const enviroment = this.configService.get<string>('S3_BUCKET');
-    console.log(enviroment);
+    console.log(this.profileConfiguration);
 
     return [
       {
