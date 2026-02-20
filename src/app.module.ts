@@ -5,11 +5,11 @@ import { UsersModule } from './users/users.module';
 import { PostsModule } from './posts/posts.module';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './users/user.entity';
 import { TagsModule } from './tags/tags.module';
 import { MetaOptinsModule } from './meta-options/meta-optins.module';
-import { MetaOptionsService } from './meta-options/providers/meta-options.service';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import appConfig from './config/app.config';
+import databaseConfig from './config/database.config';
 
 const ENV = process.env.NODE_ENV;
 
@@ -23,17 +23,21 @@ const ENV = process.env.NODE_ENV;
       //   envFilePath: ['.env.development'],
 
       envFilePath: !ENV ? '.env' : `.env.${ENV}`,
+      load: [appConfig, databaseConfig],
     }),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      // entities: [User],
-      autoLoadEntities: true,
-      synchronize: true,
-      port: 5432,
-      username: 'postgres',
-      password: '1234',
-      host: 'localhost',
-      database: 'nestjs-blog',
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        type: 'postgres',
+        autoLoadEntities: config.get('database.autoLoadEntities'),
+        synchronize: config.get('database.synchronize'),
+        host: config.get('database.host'),
+        port: config.get('database.port'),
+        username: config.get('database.user'),
+        password: config.get('database.password'),
+        database: config.get('database.name'),
+      }),
     }),
     TagsModule,
     MetaOptinsModule,
