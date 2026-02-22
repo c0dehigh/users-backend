@@ -1,4 +1,9 @@
-import { Body, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Injectable,
+  RequestTimeoutException,
+} from '@nestjs/common';
 import { UsersService } from 'src/users/providers/users.service';
 import { CreatePostDto } from '../dtos/create-post.dto';
 import { Repository } from 'typeorm';
@@ -7,6 +12,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { MetaOption } from 'src/meta-options/meta-option.entity';
 import { TagsService } from '../../tags/providers/tags.service';
 import { PatchPostDto } from '../dtos/patch-post-dto';
+import { Tag } from 'src/tags/tag.entity';
 
 @Injectable()
 export class PostsService {
@@ -41,13 +47,18 @@ export class PostsService {
 
   public async create(@Body() createPostDto: CreatePostDto) {
     // find author from a database on authorId
-    const author = await this.usersService.findOneById(createPostDto.authorId);
+    const author = (await this.usersService.findOneById(
+      createPostDto.authorId,
+    )) as any;
 
     if (author && createPostDto.tags) {
-      // find tags
-      const tags = await this.tagsService.findMultipleTags(createPostDto.tags);
+      let tags: null | Tag[] = null;
+      let post: null | Post = null;
 
-      const post = this.postRepository.create({
+      // find tags
+      tags = await this.tagsService.findMultipleTags(createPostDto.tags);
+
+      post = this.postRepository.create({
         ...createPostDto,
         author: author,
         tags: tags,
@@ -58,21 +69,52 @@ export class PostsService {
   }
 
   public async update(patchPostDto: PatchPostDto) {
-    // Find the tags
+    let tags: null | Tag[] = null;
+    let post: null | Post = null;
 
     if (!patchPostDto.tags) {
       return;
     }
 
-    const tags = await this.tagsService.findMultipleTags(patchPostDto.tags);
+    // Find the tags
+
+    try {
+      tags = await this.tagsService.findMultipleTags(patchPostDto.tags);
+    } catch (error) {
+      throw new RequestTimeoutException(
+        'Failed to find the tags. Please try again later.',
+      );
+    }
+
+    /**
+     * Number of tags need to be equal
+     */
+
+    if (!tags || tags.length !== patchPostDto.tags.length) {
+      throw new BadRequestException(
+        'Some of the tags provided are invalid. Please check the tag IDs and try again.',
+      );
+    }
+
     // Find the post
 
-    const post = await this.postRepository.findOneBy({
-      id: patchPostDto.id,
-    });
+    try {
+      post = await this.postRepository.findOneBy({
+        id: patchPostDto.id,
+      });
+    } catch (error) {
+      throw new RequestTimeoutException(
+        'Failed to find the post. Please try again later.',
+      );
+    }
+
     // Update the properties
 
-    if (!post) return;
+    if (!post) {
+      throw new BadRequestException(
+        'Post not found. Please check the post ID and try again.',
+      );
+    }
     post.title = patchPostDto.title ?? post.title;
     post.content = patchPostDto.content ?? post.content;
     post.status = patchPostDto.status ?? post.status;
@@ -85,7 +127,15 @@ export class PostsService {
     // assign the new tags
     post.tags = tags;
     // save the post and return the updated post
-    return await this.postRepository.save(post);
+    try {
+      await this.postRepository.save(post);
+    } catch (error) {
+      throw new BadRequestException(
+        'Failed to update the post. Please try again later.',
+      );
+    }
+
+    return post;
   }
 
   public async findAll(userId: string) {
