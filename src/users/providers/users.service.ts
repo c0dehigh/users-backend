@@ -16,6 +16,8 @@ import type { ConfigType } from '@nestjs/config';
 
 import profileConfig from '../config/profile.config';
 import { error } from 'console';
+import { UsersCreateManyProvider } from './users-create-many.provider';
+import { CreateManyUsersDto } from '../dtos/create-users-many.dto';
 
 /**
  * Class that handles the business logic for the users
@@ -37,6 +39,12 @@ export class UsersService {
      */
 
     private readonly dataSource: DataSource,
+
+    /**
+     * Inject usersCreateManyProvider
+     */
+
+    private readonly usersCreateManyProvider: UsersCreateManyProvider,
   ) {}
 
   public async createUser(createUserDto: CreateUserDto) {
@@ -81,6 +89,10 @@ export class UsersService {
     }
 
     return newUser;
+  }
+
+  public async createMany(createManyUsersDto: CreateManyUsersDto) {
+    return await this.usersCreateManyProvider.createMany(createManyUsersDto);
   }
 
   /**
@@ -156,33 +168,5 @@ export class UsersService {
     }
 
     return user;
-  }
-
-  public async createMany(createUserDto: CreateUserDto[]) {
-    let newUsers: User[] = [];
-
-    // Create Query Runner Instance
-    const queryRunner = this.dataSource.createQueryRunner();
-    // Connect Query Runner to datasource
-    await queryRunner.connect();
-    // Start Transaction
-    await queryRunner.startTransaction();
-    try {
-      for (let user of createUserDto) {
-        let newUser = this.usersRepository.create(user);
-        let result = await queryRunner.manager.save(newUser);
-        newUsers.push(result);
-
-        // If successful comit the transaction
-
-        await queryRunner.commitTransaction();
-      }
-    } catch (error) {
-      // If error rollback the transaction
-      await queryRunner.rollbackTransaction();
-    } finally {
-      // Release connection
-      await queryRunner.release();
-    }
   }
 }
