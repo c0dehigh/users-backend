@@ -8,6 +8,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TagsModule } from './tags/tags.module';
 import { MetaOptinsModule } from './meta-options/meta-optins.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { PaginationModule } from './common/pagination/pagination.module';
+import { PaginationProvider } from './common/pagination/providers/pagination.provider';
 import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
 import environmentValidation from './config/environment.validation';
@@ -43,8 +45,9 @@ const ENV = process.env.NODE_ENV;
     }),
     TagsModule,
     MetaOptinsModule,
+    PaginationModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, PaginationProvider],
 })
 export class AppModule {}

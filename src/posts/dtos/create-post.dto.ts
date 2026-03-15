@@ -87,6 +87,7 @@ export class CreatePostDto {
   })
   @IsISO8601()
   @IsOptional()
+  @Type(() => String)
   publishOn?: Date;
 
   @ApiPropertyOptional({
