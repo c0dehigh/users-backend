@@ -43,7 +43,7 @@ export class PaginationProvider {
     const nextPage = page === totalPages ? page : page + 1;
     const previousPage = page === 1 ? page : page - 1;
 
-    const finalResponse: Paginated<T> = {
+    return {
       data: result,
       meta: {
         itemsPerPage: limit,
@@ -59,7 +59,5 @@ export class PaginationProvider {
         previous: `${newUrl.origin}${newUrl.pathname}?limit=${limit}&page=${previousPage}`,
       },
     };
-
-    return finalResponse;
   }
 }
