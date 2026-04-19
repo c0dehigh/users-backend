@@ -20,13 +20,13 @@ export class PaginationProvider {
   ): Promise<Paginated<T>> {
     const limit = paginationQuery.limit ?? 10;
     const page = paginationQuery.page ?? 1;
-    let result = await repository.find({
+    const result = await repository.find({
       skip: page * limit,
       take: paginationQuery.limit,
     });
 
     /**
-     * create thse request urls
+     * create this request urls
      */
 
     const baseUrl =
