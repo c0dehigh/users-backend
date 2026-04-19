@@ -15,7 +15,7 @@ export class TagsService {
   ) {}
 
   public async create(createTagDto: CreateTagDto) {
-    let tag = this.tagsRepository.create(createTagDto);
+    const tag = this.tagsRepository.create(createTagDto);
     return await this.tagsRepository.save(tag);
   }
 
@@ -31,7 +31,6 @@ export class TagsService {
     await this.tagsRepository.delete(id);
     return { deleted: true, id };
   }
-
 
   public async softRemove(id: number) {
     await this.tagsRepository.softDelete(id);

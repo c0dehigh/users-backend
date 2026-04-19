@@ -151,7 +151,7 @@ export class PostsService {
     postQuery: GetPostsDto,
     userId: string,
   ): Promise<Paginated<Post>> {
-    let posts = await this.paginationProvider.paginatedQuery(
+    const posts = await this.paginationProvider.paginatedQuery(
       {
         limit: postQuery.limit,
         page: postQuery.page,

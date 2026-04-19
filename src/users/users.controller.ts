@@ -3,14 +3,12 @@ import {
   Get,
   Post,
   Patch,
-  Put,
-  Delete,
   Param,
   Query,
   Body,
   ParseIntPipe,
   DefaultValuePipe,
-  ValidationPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { GetUsersParamDto } from './dtos/get-users-param.dto';
@@ -18,9 +16,10 @@ import { PatchUserDto } from './dtos/patch-user.dto';
 import { UsersService } from './providers/users.service';
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateManyUsersDto } from './dtos/create-users-many.dto';
+import { AccessTokenGuard } from 'src/auth/guards/access-token/access-token.guard';
 @Controller('users')
 @ApiTags('Users')
-export class UsersController {
+class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   // optional '{/:id}'
@@ -37,14 +36,14 @@ export class UsersController {
     name: 'limit',
     type: 'number',
     required: false,
-    description: 'the number of entreis returned per query',
+    description: 'the number of entries returned per query',
     example: 10,
   })
   @ApiQuery({
     name: 'page',
     type: 'number',
     required: false,
-    description: 'the number of entreis returned per page',
+    description: 'the number of entries returned per page',
     example: 3,
   })
   public getUsers(
@@ -60,6 +59,7 @@ export class UsersController {
     return this.usersService.createUser(createUserDto);
   }
 
+  @UseGuards(AccessTokenGuard)
   @Post('create-many')
   public createManyUsers(@Body() createManyUsersDto: CreateManyUsersDto) {
     return this.usersService.createMany(createManyUsersDto);
@@ -70,3 +70,5 @@ export class UsersController {
     return patchUserDto;
   }
 }
+
+export default UsersController;

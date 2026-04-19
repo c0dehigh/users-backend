@@ -26,7 +26,7 @@ export class UsersCreateManyProvider {
   ) {}
 
   public async createMany(createManyUsersDto: CreateManyUsersDto) {
-    let newUsers: User[] = [];
+    const newUsers: User[] = [];
 
     // Create Query Runner Instance
     const queryRunner = this.dataSource.createQueryRunner();
@@ -42,9 +42,9 @@ export class UsersCreateManyProvider {
     }
 
     try {
-      for (let user of createManyUsersDto.users) {
-        let newUser = this.usersRepository.create(user);
-        let result = await queryRunner.manager.save(newUser);
+      for (const user of createManyUsersDto.users) {
+        const newUser = this.usersRepository.create(user);
+        const result = await queryRunner.manager.save(newUser);
         newUsers.push(result);
       }
 

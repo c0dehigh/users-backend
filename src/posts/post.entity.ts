@@ -1,7 +1,6 @@
 import {
   Column,
   Entity,
-  JoinColumn,
   JoinTable,
   ManyToMany,
   ManyToOne,
@@ -10,7 +9,6 @@ import {
 } from 'typeorm';
 import { postType } from './enums/postType.enum';
 import { postStatus } from './enums/postStatus.enum';
-import { CreatePostMetaOptionsDto } from './dtos/create-post-meta-options.dto';
 import { MetaOption } from 'src/meta-options/meta-option.entity';
 import { User } from '../users/user.entity';
 import { Tag } from '../tags/tag.entity';
