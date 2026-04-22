@@ -126,6 +126,7 @@ export class UsersService {
         'Unable to process the request at the moment. Please try again later.',
         {
           description: 'Database connection error',
+          cause: String(error),
         },
       );
     }
